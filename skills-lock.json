@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "pro-upgrade": {
+      "source": "ant-design/ant-design-pro",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/pro-upgrade/SKILL.md",
+      "computedHash": "dbec59606bd604254192cb5685462dae1a79340279b4f31e75f6000a267a53a6"
+    }
+  }
+}
