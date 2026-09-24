@@ -16,5 +16,5 @@ declare module '@antv/data-set';
 declare module 'react-fittext';
 declare module 'bizcharts-plugin-slider';
 
-declare const REACT_APP_ENV: 'test' | 'dev' | 'pre' | 'prod';
+declare const UMI_ENV: 'test' | 'dev' | 'pre' | 'prod';
 declare const ENABLE_REFRESH_TOKEN: boolean;

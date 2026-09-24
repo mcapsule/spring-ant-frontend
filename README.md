@@ -56,7 +56,7 @@ Scripts are defined in [package.json](package.json).
 
 `config.${UMI_ENV}.ts` official guide: https://umijs.org/docs/guides/env-variables#umi_env
 
-> **Note**: If you use `pnpm start`, `REACT_APP_ENV` will be `false` instead of `dev`.
+> **Note**: If you use `pnpm start`, `UMI_ENV` will be `false` instead of `dev`.
 
 ```bash
 pnpm run start:dev

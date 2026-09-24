@@ -1,13 +1,14 @@
 // https://umijs.org/config/
+
+import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
-import { join } from 'path';
 import defaultSettings from './defaultSettings';
-import routes from './routes';
 import proxy from './proxy';
+import routes from './routes';
 
 const {
-  // REACT_APP_ENV will be replaced by build command
-  REACT_APP_ENV = 'dev',
+  // UMI_ENV will be replaced by build command
+  UMI_ENV = 'dev',
   ENABLE_REFRESH_TOKEN = true,
 } = process.env;
 
@@ -75,7 +76,7 @@ export default defineConfig({
    * @doc 代理介绍 https://umijs.org/docs/guides/proxy
    * @doc 代理配置 https://umijs.org/docs/api/config#proxy
    */
-  proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
+  proxy: proxy[UMI_ENV as keyof typeof proxy],
   /**
    * @name 快速热更新配置
    * @description 一个不错的热更新组件，更新时可以保留 state
@@ -149,7 +150,7 @@ export default defineConfig({
     { src: join(PUBLIC_PATH, 'scripts/loading.js'), async: true },
   ],
   //================ pro 插件配置 =================
-  presets: ['umi-presets-pro'],
+  plugins: ['@umijs/request-record'],
   /**
    * @name 是否开启 mako
    * @description 使用 mako 极速研发

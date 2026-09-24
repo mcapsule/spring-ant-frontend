@@ -2,9 +2,12 @@
 // import type { RequestConfig } from '@umijs/max';
 import { getIntl, type RequestConfig } from '@umijs/max';
 import { message, notification } from '@/api_core/components/MessageProvider';
-import localStorageUtil from './utils/localStorageUtil';
-import { isAccessTokenExpired, refreshTokenAndGetNewToken } from './utils/refreshTokenUtil';
 import { URL_PATH } from '@/services/ant-design-pro/api';
+import localStorageUtil from './utils/localStorageUtil';
+import {
+  isAccessTokenExpired,
+  refreshTokenAndGetNewToken,
+} from './utils/refreshTokenUtil';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -66,14 +69,19 @@ export const errorConfig: RequestConfig = {
       // 拦截请求配置，进行个性化处理。 Intercepts request configuration for personalized processing.
       // const url = config?.url?.concat('?token = 123');
       const url = config?.url;
-      let accessToken = localStorageUtil.get(localStorageUtil.JwtTokenEnum.accessToken);
+      let accessToken = localStorageUtil.get(
+        localStorageUtil.JwtTokenEnum.accessToken,
+      );
 
       if (ENABLE_REFRESH_TOKEN) {
-        if (url && (url.endsWith(URL_PATH.refreshToken) || url.endsWith(URL_PATH.login))) {
+        if (
+          url &&
+          (url.endsWith(URL_PATH.refreshToken) || url.endsWith(URL_PATH.login))
+        ) {
           return config;
         }
         if (accessToken && isAccessTokenExpired()) {
-          let accessTokenNew = await refreshTokenAndGetNewToken();
+          const accessTokenNew = await refreshTokenAndGetNewToken();
           if (accessTokenNew) {
             accessToken = accessTokenNew;
           }
@@ -96,7 +104,7 @@ export const errorConfig: RequestConfig = {
       // handle response if no http level error
       async (response) => {
         const url = response?.config?.url;
-        if (url && url.endsWith(URL_PATH.refreshToken)) {
+        if (url?.endsWith(URL_PATH.refreshToken)) {
           // as refreshToken is a hidden operation, no need to show any message
           return response;
         }
@@ -113,7 +121,7 @@ export const errorConfig: RequestConfig = {
       // handle error
       (error: any) => {
         const url = error?.config?.url;
-        if (url && url.endsWith(URL_PATH.refreshToken)) {
+        if (url?.endsWith(URL_PATH.refreshToken)) {
           // as refreshToken is a hidden operation, no need to show any message
           return Promise.reject(error);
         }
@@ -130,7 +138,9 @@ export const errorConfig: RequestConfig = {
           switch (responseStatus) {
             case 0:
             case 403:
-              message.error(intl.formatMessage({ id: 'http.' + error.response.status }));
+              message.error(
+                intl.formatMessage({ id: `http.${error.response.status}` }),
+              );
               break;
             default:
               message.error(intl.formatMessage({ id: 'http.others' }));
@@ -138,14 +148,19 @@ export const errorConfig: RequestConfig = {
           }
         } else if (axiosErrorCode && axiosErrorMessage) {
           // Could be: 1. network failure or maybe the server is totally down (but with umi framework, we tested this error is the same as responseStatus==0 above)   2. axios timeout   3...
-          console.error('Axios error:', axiosErrorCode, axiosErrorMessage, error);
+          console.error(
+            'Axios error:',
+            axiosErrorCode,
+            axiosErrorMessage,
+            error,
+          );
           // message.error("Bad network, please try again later"); // you way want to show this, instead of the axiosErrorMessage
           message.error(axiosErrorMessage);
         } else {
           // if the error is by code, NullPointerException, etc.
           console.error('Code error', error);
 
-          // if (REACT_APP_ENV !== 'prod') {
+          // if (UMI_ENV !== 'prod') {
           notification.open({
             description: error.message, // the IT can use this message to check which code is wrong
             message:

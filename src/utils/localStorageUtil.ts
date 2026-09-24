@@ -47,4 +47,11 @@ const setAllJwtToken = (msg: API.LoginResult): void => {
   }
 };
 
-export default { set, get, remove, setAllJwtToken, removeAllJwtToken, JwtTokenEnum };
+export default {
+  set,
+  get,
+  remove,
+  setAllJwtToken,
+  removeAllJwtToken,
+  JwtTokenEnum,
+};

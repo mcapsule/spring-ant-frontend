@@ -56,7 +56,7 @@ pnpm install
 
 `config.${UMI_ENV}.ts` 官方文档: https://umijs.org/docs/guides/env-variables#umi_env
 
-> **注意**：如果使用 `pnpm start`，`REACT_APP_ENV` 的值会是 `false`，而不是 `dev`。
+> **注意**：如果使用 `pnpm start`，`UMI_ENV` 的值会是 `false`，而不是 `dev`。
 
 ```bash
 pnpm run start:dev

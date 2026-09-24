@@ -1,6 +1,9 @@
-import { addRule, removeRule, rule, updateRule } from '@/services/ant-design-pro/api';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns, ProDescriptionsItemProps } from '@ant-design/pro-components';
+import type {
+  ActionType,
+  ProColumns,
+  ProDescriptionsItemProps,
+} from '@ant-design/pro-components';
 import {
   FooterToolbar,
   ModalForm,
@@ -11,11 +14,17 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer, Input } from 'antd';
+import { Button, Drawer } from 'antd';
 import React, { useRef, useState } from 'react';
+import { message } from '@/api_core/components/MessageProvider';
+import {
+  addRule,
+  removeRule,
+  rule,
+  updateRule,
+} from '@/services/ant-design-pro/api';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import { message } from '@/api_core/components/MessageProvider';
 
 /**
  * @en-US Add node
@@ -29,7 +38,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
     hide();
     message.success('Added successfully');
     return true;
-  } catch (error) {
+  } catch (_error) {
     hide();
     // message.error('Adding failed, please try again!');
     return false;
@@ -54,7 +63,7 @@ const handleUpdate = async (fields: FormValueType) => {
 
     message.success('Configuration is successful');
     return true;
-  } catch (error) {
+  } catch (_error) {
     hide();
     message.error('Configuration failed, please try again!');
     return false;
@@ -77,7 +86,7 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
     hide();
     message.success('Deleted successfully and will refresh soon');
     return true;
-  } catch (error) {
+  } catch (_error) {
     hide();
     message.error('Delete failed, please try again');
     return false;
@@ -98,7 +107,7 @@ const TableList: React.FC = () => {
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
-  const actionRef = useRef<ActionType>();
+  const actionRef = useRef<ActionType | undefined>(undefined);
   const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
   const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
 
@@ -131,7 +140,12 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.titleDesc"
+          defaultMessage="Description"
+        />
+      ),
       dataIndex: 'desc',
       valueType: 'textarea',
     },
@@ -152,7 +166,12 @@ const TableList: React.FC = () => {
         })}`,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.titleStatus"
+          defaultMessage="Status"
+        />
+      ),
       dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
@@ -167,13 +186,19 @@ const TableList: React.FC = () => {
         },
         1: {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.running"
+              defaultMessage="Running"
+            />
           ),
           status: 'Processing',
         },
         2: {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
+            <FormattedMessage
+              id="pages.searchTable.nameStatus.online"
+              defaultMessage="Online"
+            />
           ),
           status: 'Success',
         },
@@ -198,27 +223,25 @@ const TableList: React.FC = () => {
       sorter: true,
       dataIndex: 'updatedAt',
       valueType: 'dateTime',
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
+      fieldProps: (form) => {
         const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return (
-            <Input
-              {...rest}
-              placeholder={intl.formatMessage({
+        return `${status}` === '3'
+          ? {
+              placeholder: intl.formatMessage({
                 id: 'pages.searchTable.exception',
                 defaultMessage: 'Please enter the reason for the exception!',
-              })}
-            />
-          );
-        }
-        return defaultRender(item);
+              }),
+            }
+          : {};
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: (
+        <FormattedMessage
+          id="pages.searchTable.titleOption"
+          defaultMessage="Operating"
+        />
+      ),
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -229,7 +252,10 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage
+            id="pages.searchTable.config"
+            defaultMessage="Configuration"
+          />
         </a>,
         <a key="subscribeAlert" href="https://procomponents.ant.design/">
           <FormattedMessage
@@ -261,7 +287,8 @@ const TableList: React.FC = () => {
               handleModalOpen(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            <PlusOutlined />{' '}
+            <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
         request={rule}
@@ -281,17 +308,29 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
+              <FormattedMessage
+                id="pages.searchTable.chosen"
+                defaultMessage="Chosen"
+              />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+              <FormattedMessage
+                id="pages.searchTable.item"
+                defaultMessage="项"
+              />
               &nbsp;&nbsp;
               <span>
                 <FormattedMessage
                   id="pages.searchTable.totalServiceCalls"
                   defaultMessage="Total number of service calls"
                 />{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
+                {selectedRowsState.reduce(
+                  (pre, item) => pre + (item.callNo ?? 0),
+                  0,
+                )}{' '}
+                <FormattedMessage
+                  id="pages.searchTable.tenThousand"
+                  defaultMessage="万"
+                />
               </span>
             </div>
           }
@@ -373,7 +412,11 @@ const TableList: React.FC = () => {
       />
 
       <Drawer
-        width={600}
+        styles={{
+          wrapper: {
+            width: 600,
+          },
+        }}
         open={showDetail}
         onClose={() => {
           setCurrentRow(undefined);

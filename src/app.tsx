@@ -1,23 +1,32 @@
-import { AvatarDropdown, AvatarName, Footer, Message, Question, SelectLang } from '@/components';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
-import type { RunTimeLayoutConfig } from '@umijs/max';
+import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
-import React, { ReactNode } from 'react';
-import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
 import { App, ConfigProvider } from 'antd';
+import type { ReactNode } from 'react';
+import React from 'react';
+import {
+  AvatarDropdown,
+  AvatarName,
+  Footer,
+  Message,
+  Question,
+  SelectLang,
+} from '@/components';
+import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
+import defaultSettings from '../config/defaultSettings';
 import { LoadingProvider } from './api_core/components/LoadingContext';
+import { errorConfig } from './requestErrorConfig';
 
-const isDev = process.env.NODE_ENV === 'development' || REACT_APP_ENV === 'dev';
+const isDev =
+  process.env.NODE_ENV === 'development' || process.env.UMI_ENV === 'dev';
 console.log(
   'isDev',
   isDev,
   'process.env.NODE_ENV',
   process.env.NODE_ENV,
-  'REACT_APP_ENV',
-  REACT_APP_ENV,
+  'UMI_ENV',
+  process.env.UMI_ENV,
 );
 const loginPath = '/user/login';
 
@@ -47,7 +56,7 @@ export async function getInitialState(): Promise<{
         skipErrorHandler: true,
       });
       return msg.data;
-    } catch (error) {
+    } catch (_error) {
       history.push(loginPath);
     }
     return undefined;
@@ -69,9 +78,15 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({
+  initialState,
+  setInitialState,
+}) => {
   return {
-    actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [
+      <Question key="doc" />,
+      <SelectLang key="SelectLang" />,
+    ],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -144,6 +159,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * 它基于 axios 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。
  * @doc https://umijs.org/docs/max/request#配置
  */
-export const request = {
+export const request: RequestConfig = {
   ...errorConfig,
 };

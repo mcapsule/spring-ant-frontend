@@ -1,14 +1,18 @@
-import { outLogin } from '@/services/ant-design-pro/api';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
-import { Spin } from 'antd';
 import type { MenuProps } from 'antd';
+import { Spin } from 'antd';
 import { createStyles } from 'antd-style';
 import { stringify } from 'querystring';
 import React from 'react';
 import { flushSync } from 'react-dom';
-import HeaderDropdown from '../HeaderDropdown';
+import { outLogin } from '@/services/ant-design-pro/api';
 import localStorageUtil from '@/utils/localStorageUtil';
+import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -39,7 +43,10 @@ const useStyles = createStyles(({ token }) => {
   };
 });
 
-export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, children }) => {
+export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
+  menu,
+  children,
+}) => {
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -97,7 +104,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser?.name) {
     return loading;
   }
 
