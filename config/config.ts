@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { defineConfig } from '@umijs/max';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
+
 import routes from './routes';
 
 const {

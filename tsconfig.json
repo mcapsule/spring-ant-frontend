@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "experimentalDecorators": true,
     "strict": true,
-    "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "types": ["vitest/globals", "node"],
     "paths": {
       "@/*": ["./src/*"],
       "@@/*": ["./src/.umi/*"],
-      "@@test/*": ["./src/.umi-test/*"]
+      "@@test/*": ["./src/.umi-test/*"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["./**/*.d.ts", "./**/*.ts", "./**/*.tsx"]

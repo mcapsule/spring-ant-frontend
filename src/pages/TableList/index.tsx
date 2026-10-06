@@ -14,7 +14,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, type FormInstance, Input } from 'antd';
 import React, { useRef, useState } from 'react';
 import { message } from '@/api_core/components/MessageProvider';
 import {
@@ -223,16 +223,34 @@ const TableList: React.FC = () => {
       sorter: true,
       dataIndex: 'updatedAt',
       valueType: 'dateTime',
-      fieldProps: (form) => {
+      formItemRender: (
+        item: ProColumns<API.RuleListItem>,
+        {
+          defaultRender,
+          ...rest
+        }: {
+          defaultRender: (
+            item: ProColumns<API.RuleListItem>,
+          ) => React.ReactNode;
+        },
+        form: FormInstance,
+      ) => {
         const status = form.getFieldValue('status');
-        return `${status}` === '3'
-          ? {
-              placeholder: intl.formatMessage({
+        if (`${status}` === '0') {
+          return false;
+        }
+        if (`${status}` === '3') {
+          return (
+            <Input
+              {...rest}
+              placeholder={intl.formatMessage({
                 id: 'pages.searchTable.exception',
                 defaultMessage: 'Please enter the reason for the exception!',
-              }),
-            }
-          : {};
+              })}
+            />
+          );
+        }
+        return defaultRender(item);
       },
     },
     {
